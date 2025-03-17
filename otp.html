@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forgot Password</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .forgot-password-form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+        .forgot-password-form h2 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            text-align: center;
+        }
+        .forgot-password-form label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .forgot-password-form input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .forgot-password-form button {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .forgot-password-form button:hover {
+            background-color: #218838;
+        }
+        .back-to-login {
+            text-align: center;
+            margin-top: 10px;
+        }
+        .back-to-login a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .back-to-login a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="forgot-password-form">
+        <h2>Forgot Password</h2>
+        <form id="forgotPasswordForm" onsubmit="return sendOTP(event)">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+            <button type="submit">Send OTP</button>
+        </form>
+        <div class="back-to-login">
+            <a href="login.html">Back to Login</a>
+        </div>
+    </div>
+
+    <script>
+     async function sendOTP(event) {
+            event.preventDefault(); // Prevent form submission
+
+            const email = document.getElementById('email').value;
+
+            try {
+                const response = await fetch('http://localhost:3000/send-otp', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email }),
+                });
+
+                const data = await response.json();
+                console.log(response);
+                
+
+                if (response.ok){
+
+                    alert(`OTP sent to ${email}. Redirecting to reset password page...`);
+                    window.location.href = `resetPassword.html?email=${encodeURIComponent(email)}`;
+        
+                 } else {
+                    alert(data.message || 'Failed to send OTP. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            }
+        };
+        async function updatePassword(email, password) {
+    try {
+        const response = await fetch('http://localhost:3000/update-password', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, password }), // Include email in the request body
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to update password.');
+        }
+
+              
+        const data = await response.json();
+        console.log(data.message); // "Password updated successfully."
+        
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}</script>
+</body>
+</html>
