@@ -164,7 +164,7 @@ const transporter = nodemailer.createTransport({
  
   auth: {
       user: '226m1a05b4@bvcr.edu.in',
-      pass: 'feslfxaeruxtcodp',
+      pass: '',
   },
 });
 
